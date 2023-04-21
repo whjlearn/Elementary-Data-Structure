@@ -13,6 +13,7 @@ void SListPrint(SLTNode* phead)
 
 SLTNode* BySListNode(SLTDataType x)
 {
+
 	SLTNode* newnode = (SLTNode*)malloc(sizeof(SLTNode));
 	assert(newnode);
 
@@ -25,6 +26,8 @@ SLTNode* BySListNode(SLTDataType x)
 //尾插1.找到尾巴
 void SListPushBack(SLTNode* *pphead, SLTDataType x)
 {
+	assert(pphead);
+
 	SLTNode* newnode = BySListNode(x);
 
 	if (*pphead == NULL)
@@ -46,6 +49,8 @@ void SListPushBack(SLTNode* *pphead, SLTDataType x)
 //尾删
 void SListPopBack(SLTNode** pphead)
 {
+	assert(pphead);
+
 	assert(*pphead != NULL);
 	
 	if ((*pphead)->next==NULL)
@@ -88,6 +93,8 @@ void SListPopBack(SLTNode** pphead)
 //头插
 void SListPushFront(SLTNode** pphead, SLTDataType x)
 {
+	assert(pphead);
+
 	SLTNode* newnode = BySListNode(x);
 		newnode->next = *pphead;
 		*pphead = newnode;
@@ -97,6 +104,8 @@ void SListPushFront(SLTNode** pphead, SLTDataType x)
 void SListPopFront(SLTNode** pphead)
 {
 	assert(*pphead);
+	assert(pphead);
+
 	SLTNode* next = (*pphead)->next;
 	free(*pphead);
 	*pphead = next;
@@ -104,7 +113,7 @@ void SListPopFront(SLTNode** pphead)
 //查找  既可以查找也可以修改
 SLTNode* SListFind(SLTNode* phead,SLTDataType x)
 {
-	assert(phead);
+	
 	SLTNode* cur = phead;
 	while (cur)
 	{
@@ -115,4 +124,48 @@ SLTNode* SListFind(SLTNode* phead,SLTDataType x)
 		cur = cur->next;
 	}
 	return NULL;
+}
+
+//在pos位置之前插入
+void SListInsert(SLTNode** pphead, SLTNode* pos, SLTDataType x)
+{
+	assert(pos);//pos不能为空 做检查
+	assert(pphead);
+	//如果插入的位置等于pphead 调用头插即可
+	if (pos==*pphead)
+	{
+		SListPushFront(pphead,x);
+	}
+	else
+	{
+		SLTNode* prev = *pphead;
+		while (prev->next != pos)
+		{
+			prev = prev->next;
+		}
+		SLTNode* newnode =  BySListNode(x);
+		prev->next = newnode;       //newnode = prev;
+		newnode->next = pos;
+	}
+
+}
+
+//删除pos位置的值
+void SListErase(SLTNode** pphead, SLTNode* pos)
+{
+	assert(pphead&&pos);
+	if (*pphead==pos)
+	{
+		SListPopFront(pphead);
+	}
+	else
+	{
+		SLTNode* prev = *pphead;
+		while (prev->next!= pos)
+		{
+			prev = prev->next;
+		}
+		prev->next = pos->next;
+		free(pos);
+	}
 }

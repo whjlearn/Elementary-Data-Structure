@@ -90,15 +90,13 @@ void TestSList5()
 
 	SListPrint(plist);
 
-	SListPopFront(&plist);
-	SListPopFront(&plist);
+	SLTNode* pos = SListFind(plist, 10);
+	if (pos)
+	{
+		//SListInsert(&plist, pos, 40);
+		SListErase(&plist, pos);
+	}
 	SListPrint(plist);
-
-	SListPopBack(&plist);
-	SListPrint(plist);
-	SListPopBack(&plist);
-	SListPrint(plist);
-
 
 }
 
@@ -106,4 +104,28 @@ int main()
 {
 	TestSList5();
 	return 0;
+}
+
+// 在pos位置之后插入
+void SListInsertAfter(SLTNode* pos, SLTDataType x)
+{
+	assert(pos);
+	SLTNode* newnode= BySListNode(x);
+	newnode->next = pos->next;
+	pos->next = newnode;
+}
+
+//删除pos位置之后的值
+void SListErase(SLTNode* pos)
+{
+	assert(pos);
+	if (pos->next==NULL)
+	{
+		return;
+	}
+	SLTNode* del = pos->next;
+	pos->next = del->next;
+	free(del);
+	//置空不置空都行
+	del = NULL;
 }
