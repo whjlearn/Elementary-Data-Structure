@@ -1,5 +1,5 @@
 #include"Heap.h"
-
+#include<time.h>
 
 void Swap(HPDataType* p1, HPDataType* p2)
 {
@@ -41,8 +41,8 @@ void AdjustUp(HPDataType* a,int child )//ÔÚÊı×éµ±ÖĞ ¸¸Ç×ÔÚµÄÎ»ÖÃ   µÈÓÚ  £¨×óÓÒº
 	int parent = (child - 1) / 2;
 	while (child>0)
 	{
-		//if (a[child]<a[parent])//Ğ¡¶Ñ
-		if (a[child] > a[parent])//´ó¶Ñ
+		if (a[child]<a[parent])//Ğ¡¶Ñ
+		//if (a[child] > a[parent])//´ó¶Ñ
 
 		{
 			Swap(&a[child], &a[parent]);
@@ -90,15 +90,15 @@ void AdjustDown(HPDataType* a,int size,int parent)
 	
 	while (child<size)
 	{
-		//if (child + 1 < size && a[child+1]<a[child])// Ğ¡¶Ñ  ÔÚÄÚ´æÖĞÊÇÁ¬ĞøµÄÊı¾İ£¬ÓÒº¢×ÓµÈÓÚ×öº¢×ÓÏÂ±ê+1
-		if (child + 1 < size && a[child + 1] > a[child])//´ó¶Ñ
+		if (child + 1 < size && a[child+1]<a[child])// Ğ¡¶Ñ  ÔÚÄÚ´æÖĞÊÇÁ¬ĞøµÄÊı¾İ£¬ÓÒº¢×ÓµÈÓÚ×óº¢×ÓÏÂ±ê+1
+		//if (child + 1 < size && a[child + 1] > a[child])//´ó¶Ñ
 		{
 			++child;
 		}
 
 		//×ßµ½ÕâÀï child¾ÍÊÇ×îĞ¡µÄº¢×Ó
-		//if (a[child] < a[parent])//Ğ¡¶Ñ   º¢×Ó±È¸¸Ç×¶¼Ğ¡£¬½»»»
-		if (a[child] > a[parent])//´ó¶Ñ
+		if (a[child] < a[parent])//Ğ¡¶Ñ   º¢×Ó±È¸¸Ç×¶¼Ğ¡£¬½»»»
+		//if (a[child] > a[parent])//´ó¶Ñ
 		{
 			Swap(&a[child], &a[parent]);
 			parent = child;
