@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<assert.h>
+#include"Queue.h"
 typedef int BTDataType;
 
 typedef struct BinaryTreeNode
@@ -30,12 +31,15 @@ BTNode* CreatBinaryTree()
 	BTNode* node4 = BuyNode(4);
 	BTNode* node5 = BuyNode(5);
 	BTNode* node6 = BuyNode(6);
+	BTNode* node7 = BuyNode(7);
+
 
 	node1->left = node2;
 	node1->right = node4;
 	node2->left = node3;
 	node4->left = node5;
 	node4->right = node6;
+	node2->right = node7;
 	return node1;
 }
 
@@ -165,6 +169,96 @@ BTNode* TreeFind(BTNode* root,BTDataType x)
 
 }
 
+//销毁
+void TreeDestroy(BTNode* root)
+{
+	if (root == NULL)
+		return;
+
+	TreeDestroy(root->left);
+	TreeDestroy(root->right);
+	free(root);
+
+}
+
+
+//层序遍历
+//队列实现
+
+void LevelOrder(BTNode* root)
+{
+	Queue q;
+	QueueInit(&q);
+	if (root)
+	{
+		QueuePush(&q,root);//如果root 不等于空 放进队列
+	}
+	while (!QueueEmpty(&q))//队列不等于空就继续
+	{
+		BTNode* front = QueueFront(&q);
+		printf("%d ", front->date);
+		QueuePop(&q);
+		if (front->left)
+		{
+			QueuePush(&q, front->left);
+		}
+		if (front->right)
+		{
+			QueuePush(&q, front->right);
+		}
+	}
+	printf("\n");
+	QueueDestroy(&q);
+
+}
+
+//判断二叉树是否是完全二叉树
+int TreeComplete(BTNode* root)
+{
+	//层序遍历 如果是完全二叉树 非空集中在一起 空集中在一起 1 1 1 1 1 1 N N N N N N 
+	Queue q;
+	QueueInit(&q);
+	if (root)
+	{
+		QueuePush(&q, root);//如果root 不等于空 放进队列
+	}
+	while (!QueueEmpty(&q))//队列不等于空就继续
+	{
+		BTNode* front = QueueFront(&q);
+		QueuePop(&q);
+		if (front)//队列首元素存在
+		{
+			QueuePush(&q, front->left);
+			QueuePush(&q, front->right);
+		}
+		else
+		{
+			//遇到空以后，则跳出层序遍历
+			break;
+		}
+	}
+	
+	//如果后面全是空，则是完全二叉树
+	//如果 空 后面还有 非空      则不是完全二叉树
+	while (!QueueEmpty(&q))//队列不等于空就继续
+	{
+		BTNode* front = QueueFront(&q);
+
+		QueuePop(&q);//记得Pop
+
+		if (front)//空 后面还有 非空      则不是完全二叉树
+		{
+			QueueDestroy(&q);//Destroy 一下 不Destroy一下 内存泄露
+
+			return false;
+		}
+	}
+	 
+	QueueDestroy(&q);
+	return true;
+}
+
+//
 int main()
 {
 	BTNode* root = CreatBinaryTree();
@@ -192,11 +286,11 @@ int main()
 	//TreeSize1LeafSize(root);
 	//printf("TreeSize:%d ", TreeSizeLeafSize(root));
 
-	printf("TreeLeaf:%d\n", TreeLeafSize(root));
-	printf("TreeLeaf:%d\n", TreeLeafSize(root));
+	//printf("TreeLeaf:%d\n", TreeLeafSize(root));
+	//printf("TreeLeaf:%d\n", TreeLeafSize(root));
 
-	TreeKLevel(root, 2);
-	printf("TreeKLevel:%d ", TreeKLevel(root, 4));
+	//TreeKLevel(root, 2);
+	//printf("TreeKLevel:%d ", TreeKLevel(root, 4));
 
 	printf("\n");
 	//BTNode* ret = TreeFind(root,10);
@@ -205,8 +299,16 @@ int main()
 	//printf("\n");
 
 
-	int ret3 = TreeDepth(root);
-	printf("TreeDepth：%d ", ret3);
+	/*int ret3 = TreeDepth(root);
+	printf("TreeDepth：%d ", ret3);*/
 
+
+	//层序遍历
+	LevelOrder(root);
+
+	//判断是否是完全二叉树
+	printf("TreeComplete:%d ", TreeComplete(root));
+	//销毁
+	TreeDestroy(root);
 	return 0;
 }
