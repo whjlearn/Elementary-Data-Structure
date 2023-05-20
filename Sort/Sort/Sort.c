@@ -134,7 +134,7 @@ void Swap(int* a,int* b )
 	*b = tmp;
 }
 
-//直接选择排序
+//直接选择排序  
 void SelectSort(int* a, int n)
 {
 	assert(a);
@@ -192,44 +192,211 @@ void BubbleSort(int* a, int n)
 	
 }
 
-//快速排序
-void QuickSort(int* a, int begin,int end)
+
+//快速排序 要优化 三数取中
+
+int GetMidIndex(int* a, int begin, int end)
+{
+	int mid = (begin + end) / 2;
+	if (a[begin]<a[mid])
+	{
+		if (a[mid]<a[end])
+		{
+			return mid;
+		}
+		else if (a[end]>a[begin])
+		{
+			return end;
+		}
+		else
+		{
+			return begin;
+		} 
+	}
+	else
+	{
+		if (a[mid] > a[end])
+		{
+			return mid;
+		}else if (a[begin]<a[end])
+		{
+			return begin;
+		}
+		else
+		{
+			return end;
+		}
+	}
+}
+
+//快速排序 
+//void QuickSort(int* a, int begin,int end)
+//{
+//
+//	//区间不存在 或者  只有一个值  则不需要再处理
+//	if (begin>=end)
+//	{
+//		return;
+//	}
+//	
+//	//int keyi = PartSort1(a,begin,end);
+//
+//	//int keyi = PartSort2(a, begin, end);//挖坑法
+//
+//	//前后指针法
+//	int keyi = PartSort3(a, begin, end);//挖坑法
+//
+//	QuickSort(a, begin, keyi - 1);
+//
+//	QuickSort(a, keyi+1, end);
+//
+//
+//	
+//
+//	
+//}
+
+
+//小区间优化
+void QuickSort(int* a, int begin, int end)
 {
 
 	//区间不存在 或者  只有一个值  则不需要再处理
-	if (begin>=end)
+	if (begin >= end)
 	{
 		return;
 	}
-	
-	int left = begin,right = end;
-	int keyi = left;
-	
-
-	while (left<right)
+	if (end-begin>10)
 	{
-		//右边找小,右边先走，找小
-		while (left<right && a[right] >= a[keyi])
-		{
-			--right;
-		}
+		int keyi = PartSort3(a, begin, end);//挖坑法
 
-		//左边找大，左边后走，找大
-		while (left < right && a[left] <= a[keyi])
-		{
-			++left;
-		}
+		QuickSort(a, begin, keyi - 1);
 
-		Swap(&a[left], &a[right]);
+		QuickSort(a, keyi + 1, end);
 	}
-	Swap(&a[keyi], &a[left]);//相等时left = right
+	else
+	{
+		//当区间小于十的时候 次用插入排序
+		InsertSort(a + begin, end - begin + 1);
+	}
 
-	keyi = left;
+	//int keyi = PartSort1(a,begin,end);
 
-	QuickSort(a, begin, keyi - 1);
-
-	QuickSort(a, keyi+1, end);
+	//int keyi = PartSort2(a, begin, end);//挖坑法
 
 	
 	
 }
+
+//Hoare 的方法
+int  PartSort1(int* a, int begin, int end)
+{
+	int left = begin;
+	int right = end;
+	int key = left;
+	while(left<right)
+	{
+		while (left<right&&a[right]>=a[key])
+		{
+			--right;
+		}
+		while(left <right&&a[left]<=a[key])
+		{
+			++left;
+		}
+		Swap(&a[left], &a[right]);
+	}
+	Swap(&a[key], &a[left]);
+	return	key = left;
+}
+
+
+//挖坑法
+
+int PartSort2(int* a,int begin,int end )
+{
+	int key = a[begin];
+	int piti = begin;//坑位
+	while (begin<end)
+	{
+		//右边找小  
+		while(begin<end&& a[end]>=key)
+		{
+			--end;
+		}
+		//找到放到坑位里 并且 更新坑位
+		a[piti] = a[end];
+		piti = end;
+
+		//左边找大
+		while(begin<end&&a[begin]<=key)
+		{
+			++begin;
+		}
+		a[piti] = a[begin];
+		piti = begin;
+	}
+	a[piti] = key;
+	
+	return piti;
+
+}
+
+//前后指针法
+int PartSort3(int* a, int begin, int end)
+{
+	int keyi = begin;
+	int prev = begin;
+	int cur = begin + 1;
+	
+	
+	//三数取中优化
+	//GetMidIndex(a,begin,end)
+	int midi = GetMidIndex(a, begin, end);
+	Swap(&a[midi], &a[keyi]);
+
+
+	while (cur<=end)
+	{
+		//cur 找小 遇到大的直接往后走  ：cur 会一直往后走
+		if (a[cur] < a[keyi] && ++prev != cur)//cur找到小于keyi内容的值 ++prev  然后判断此时的prev是否跟cur重叠 防止自己跟自己换  降低效率 ++prev!=cur 防止自己跟自己换 
+			Swap(&a[cur],&a[prev]);
+		++cur;
+	}
+
+	Swap(&a[prev],&a[keyi]);
+	keyi = prev;
+	return keyi;
+}
+
+//复习快速排序
+
+//void QuickSort(int* a,int begin,int end )
+//{
+//	if (begin>=end)
+//	{
+//		return;
+//	}
+//	int left = begin;
+//	int keyi = left;
+//	int right = end;
+//	while (left<right)
+//	{
+//		while (left<right&&a[right]>a[keyi])
+//		{
+//			--right;
+//		}
+//
+//		while (left<right && a[left]<a[keyi])
+//		{
+//			++left;
+//		}
+//
+//		Swap(&a[left], &a[right]);
+//	}
+//
+//	Swap(&a[left], &a[keyi]);
+//	keyi = left;
+//	QuickSort( a, begin, keyi - 1);
+//	QuickSort(a, keyi + 1, end);
+//}

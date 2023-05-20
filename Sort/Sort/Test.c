@@ -61,6 +61,18 @@ void TestQuickSort()
 	QuickSort(a, 0,size-1);
 	ArryPrint(a, size);
 }
+
+void TestPart3Sort()
+{
+	int a[] = { 6,1,2,7,9,3,4,5,10,8 };
+	int size = sizeof(a) / sizeof(int);
+	//printf("%d ", size);
+	printf("\n");
+	PartSort3(a, 0, size - 1);
+	ArryPrint(a, size);
+}
+
+
 int main()
 {
 	//TestInsertSort();
@@ -70,5 +82,6 @@ int main()
 	//TestSelectSort1();
 	//TestBubbleSort1();
 	TestQuickSort();
+	//TestPart3Sort();
 	return 0;
 }
