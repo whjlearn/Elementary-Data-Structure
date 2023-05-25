@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<assert.h>
+#include<string.h>
 
 
 void ArryPrint(int* a, int n);
@@ -18,3 +19,7 @@ void BubbleSort(int *a,int n );
 
 //¿ìËÙÅÅĞò
 void QuickSort(int* a, int begin, int end);
+
+
+//¹é²¢ÅÅĞò
+void MergeSort(int* a, int n);

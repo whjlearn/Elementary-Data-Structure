@@ -400,3 +400,63 @@ int PartSort3(int* a, int begin, int end)
 //	QuickSort( a, begin, keyi - 1);
 //	QuickSort(a, keyi + 1, end);
 //}
+
+void _MergeSort(int* a,int begin,int end,int* tmp )
+{
+	if (begin >= end)
+		return;
+	int mid = (begin + end) / 2;
+
+	//左区间
+	_MergeSort(a, begin, mid, tmp);
+	//右区间
+	_MergeSort(a, mid + 1, end, tmp);
+	//上半边是在进行划分
+///////////////////////////////////////////////////
+	//归并
+	int begin1 = begin, end1 = mid;
+	int begin2 = mid + 1, end2 = end;
+	int i = begin1;
+	while (begin1<=end1&&begin2<=end2)//两个区间 有一个结束则结束
+	{
+		if (a[begin1]<a[begin2])
+		{
+			tmp[i++] = a[begin1++];//两个区间 谁的值小 就放进 tmp 中让后各自向后走
+		}
+		else
+		{
+			tmp[i++] = a[begin2++];
+		}
+	}
+
+	//走到这里 则有一个区间已经结束了
+	//处理另一个没有结束的区间
+	while (begin1<=end1)
+	{
+		tmp[i++] = a[begin1++];
+	}
+	while (begin2 <= end2)
+	{
+		tmp[i++] = a[begin2++];
+	}
+
+	//把归并数据 拷贝回原数组
+	//把这段区间拷贝回去
+	//[begin][mid] [mid+1][end]
+	//归并的那段 就拷回去哪段
+	memcpy(a + begin, tmp + begin, (end - begin + 1) * sizeof(int));
+}
+
+//归并排序，分而治之
+void MergeSort(int* a, int n)
+{
+	int* tmp = (int*)malloc(sizeof(int) * n);
+	if (tmp==NULL)
+	{
+		perror("malloc is fail\n");
+		exit(-1);
+	}
+	_MergeSort(a,0,n-1,tmp);
+	free(tmp);
+	
+}
