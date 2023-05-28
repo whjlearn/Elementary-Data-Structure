@@ -407,7 +407,7 @@ void _MergeSort(int* a,int begin,int end,int* tmp )
 		return;
 	int mid = (begin + end) / 2;
 
-	//左区间
+	//左区间   递归是为了完成区间的划分
 	_MergeSort(a, begin, mid, tmp);
 	//右区间
 	_MergeSort(a, mid + 1, end, tmp);
@@ -459,4 +459,137 @@ void MergeSort(int* a, int n)
 	_MergeSort(a,0,n-1,tmp);
 	free(tmp);
 	
+}
+
+//归并排序 非递归的写法
+void MergeSortNonR(int* a, int n)
+{
+	int* tmp = (int*)malloc(sizeof(int) * n);
+	if (tmp == NULL)
+	{
+		perror("malloc is fail\n");
+		exit(-1);
+	}
+	int gap = 1;
+	while (gap<n)
+	{
+		for (int i = 0; i < n; i += 2 * gap)
+		{
+			//[i,i+gap-1][i+gap,i+2*gap-1]
+			//归并
+			int begin1 = i, end1 = i + gap - 1;
+			int begin2 = i + gap + 1, end2 = i + 2 * gap - 1;
+
+			////越界 修正边界
+			
+
+			//if (end1>=n)
+			//{
+			//	end1 = n - 1;
+
+			//	//[begin2,end2]   修正为一个不存在的区间
+			//	begin2 = n;
+			//	end2 = n - 1;
+			//}
+
+			//else if (begin2 >= n)
+			//{
+			//	
+
+			//	//[begin2,end2]   修正为一个不存在的区间
+			//	begin2 = n;
+			//	end2 = n - 1;
+			//}
+			//else if (end2>=n)
+			//{
+			//	end2 = n - 1;
+			//}
+
+
+			//end1 越界或者begin2越界，则可以不归并了
+			if (end1 >= n || begin2 >= n)
+			{
+				break;
+			}
+			else if (end2>=n)
+			{
+				end2 = n - 1;
+			}
+	
+			int m = end2 - begin1 + 1;
+			int j = begin1;
+			while (begin1 <= end1 && begin2 <= end2)//两个区间 有一个结束则结束
+			{
+				if (a[begin1] < a[begin2])
+				{
+					tmp[j++] = a[begin1++];//两个区间 谁的值小 就放进 tmp 中让后各自向后走
+				}
+				else
+				{
+					tmp[j++] = a[begin2++];
+				}
+			}
+
+			//走到这里 则有一个区间已经结束了
+		//处理另一个没有结束的区间
+			while (begin1 <= end1)
+			{
+				tmp[j++] = a[begin1++];
+			}
+			while (begin2 <= end2)
+			{
+				tmp[j++] = a[begin2++];
+			}
+			memcpy(a+i, tmp+i, sizeof(int) * m);
+		}
+
+		
+		gap=gap* 2;
+	}
+	
+
+
+
+	free(tmp);
+
+}
+
+
+void CountSort(int* a, int n)
+{
+	//找到 最小和 最大的
+	int min = a[0], max = a[0];
+	for (int i = 1; i < n; i++)
+	{
+		if (a[i] > max)
+			max = a[i];
+		if (a[i] < min)
+			min = a[i];
+	}
+
+	int range = max - min + 1;
+	int* count = (int*)malloc(sizeof(int) * range);
+	if (count==NULL)
+	{
+		perror("shibai");
+		exit(-1);
+	}
+	memset(count, 0, sizeof(int) * range);
+
+	//统计 次数
+	for (int i = 0; i < n; i++)
+	{
+		count[a[i] - min]++;
+	}
+	//回写排序
+	int j = 0;
+	for (int i = 0; i < range; i++)
+	{
+		//出现几次就会回写几个 i+min
+		while (count[i]--)
+		{
+			a[j] = i + min;
+		}
+	}
+
 }
